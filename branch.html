@@ -8,9 +8,10 @@
     p.appendChild(document.createTextNode(name + ": " + elapsed + " ms"));
     document.body.appendChild(p);
   }
+  var outer = 1;
   function c(n) {
     return function() {
-      return n;
+      return n + outer;
     };
   }
   
@@ -20,45 +21,67 @@
   i = iterations;
   var start = new Date().getTime();
   while(i--) {
-    result += dotAccessor.a();
-    result += dotAccessor.b();
-    result += dotAccessor.c();
-    result += dotAccessor.d();
+    result = dotAccessor.a();
+    result = dotAccessor.b();
+    result = dotAccessor.c();
+    result = dotAccessor.d();
   }
   appendResult("Dot Accessor", new Date().getTime() - start);
-  console.log(result);
+  window.console && console.log(result);
   
   i = iterations, result = 0;
   start = new Date().getTime();
   while(i--) {
-    result += keyAccessor['0']();
-    result += keyAccessor['1']();
-    result += keyAccessor['2']();
-    result += keyAccessor['3']();
+    result = keyAccessor['0']();
+    result = keyAccessor['1']();
+    result = keyAccessor['2']();
+    result = keyAccessor['3']();
   }
   appendResult("Key accessor", new Date().getTime() - start);
-  console.log(result);
+  window.console && console.log(result);
 
   i = iterations, result = 0;
+  start = new Date().getTime();
   while(i--) {
     var state = 0;
     switch(state) {
-      case 0: result += 0;
-              state = 1;
+      case 0: state = 1;
               continue;
-      case 1: result += 1;
-              state = 2;
+      case 1: state = 2;
               continue;
-      case 2: result += 2;
-              state = 3;
+      case 2: state = 3;
               continue;
-      case 3: result += 3;
-              state = 0;
+      case 3: state = 0;
               continue;
     }
   }
   appendResult("While-switch", new Date().getTime() - start);
-  console.log(result);
+  window.console && console.log(result);
+
+  var arrayAccessor = [c(0), c(1), c(2), c(3)];
+  i = iterations, result = 0;
+  start = new Date().getTime();
+  while(i--) {
+    result = arrayAccessor[0]();
+    result = arrayAccessor[1]();
+    result = arrayAccessor[2]();
+    result = arrayAccessor[3]();
+  }
+  appendResult("Array", new Date().getTime() - start);
+  window.console && console.log(result);
+
+  var arraySM = [c(0), c(1), c(2), c(-1)];
+  var state = 0;
+  i = iterations, result = 0;
+  start = new Date().getTime();
+  while(i--) {
+    state = arraySM[state]();
+    state = arraySM[state]();
+    state = arraySM[state]();
+    state = arraySM[state]();
+  }
+  appendResult("Array State Machine", new Date().getTime() - start);
+  window.console && console.log(result);
 </script>
 </body>
 </html>
